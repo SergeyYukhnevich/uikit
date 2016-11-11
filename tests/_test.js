@@ -128,6 +128,7 @@
             "components/lightbox",
             "components/nestable",
             "components/notify",
+            "components/onboardtour",
             "components/pagination-js",
             "components/parallax",
             "components/placeholder",

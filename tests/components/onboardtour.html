@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>On board tour - UIkit tests</title>
+
+        <script src="../_test.js"></script>
+        <script src="../../src/js/components/tooltip.js"></script>
+        <script src="../../src/js/components/onboardtour.js"></script>
+
+        <script>
+        jQuery(function($) {
+          window.tour = $.UIkit.onboardtour({
+            items: [
+              {
+                'boundTo': '#first',
+                'message': 'first tooltip',
+                'tooltip': {
+                  'pos': 'top'
+                }
+              },
+              {
+                'boundTo': '#second',
+                'events': ['#third click'],
+                'message': 'second tooltip',
+                'tooltip': {
+                  'pos': 'right'
+                }
+              },
+              {
+                'boundTo': '#third',
+                'message': 'third tooltip',
+                'tooltip': {
+                  'pos': 'bottom'
+                }
+              },
+              {
+                'boundTo': '#fourth',
+                'message': 'fourth tooltip',
+                'tooltip': {
+                  'pos': 'left'
+                }
+              }
+            ]
+          });
+
+          setTimeout(tour.start.bind(tour), 1000);
+        });
+        </script>
+
+    </head>
+
+    <body>
+
+        <div class="uk-container uk-container-center">
+
+            <h1>On board tour.</h1>
+
+            <h2>Positions</h2>
+
+            <div class="uk-margin-large">
+              <button class="uk-button" id="first">first top</button>
+            </div>
+            <div class="uk-margin-large">
+              <button class="uk-button" id="second">second right</button>
+            </div>
+            <div class="uk-margin-large">
+              <button class="uk-button" id="third">third bottom</button>
+            </div>
+            <div class="uk-margin-large">
+              <button class="uk-button" id="fourth">fourth left</button>
+            </div>
+
+        </div>
+
+    </body>
+</html>
