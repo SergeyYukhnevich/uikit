@@ -34,7 +34,7 @@
    */
   function Step(options, tour) {
     this.tour = tour;
-    this.state = 'hidden' // [shown, hidden]
+    this.state = 'hidden'; // [shown, hidden]
 
     this.init(options);
   }
@@ -117,14 +117,6 @@
     _SESSION_KEY: 'tour-session-id',
 
     /**
-     * Key of item that is set in localStorage.
-     *
-     * @private
-     * @type {string}
-     */
-    _LOCAL_KEY: 'tour-times',
-
-    /**
      * Init the tour plugin.
      *
      * @params options
@@ -160,11 +152,11 @@
      * @return void
      */
     start: function() {
-      if (this._isInSession()) {
+      var step = this.steps[0];
+
+      if (this._isInSession() || !step.$boundTo.length) {
         return;
       }
-
-      var step = this.steps[0];
 
       this._setSession();
       step.listen(step.settings.events);
@@ -231,8 +223,33 @@
     },
 
     init: function(options) {
+      var pos;
+
       this.settings = UI.$.extend(true, {}, this.defaults, options);
-      this.$el = UI.$(this.settings.boundTo);
+      this.$boundTo = UI.$(this.settings.boundTo).first();
+
+      if (!this.$boundTo.length) {
+        console.warn('onboardtour, bound to element is not found.');
+
+        return;
+      }
+
+      this.$el = UI.$('<div class="onboardtour-step" />').appendTo(UI.$(this.settings.boundTo).first());
+
+      pos = this.$boundTo.css('position');
+
+      this.$boundTo.css({
+        'position': (pos === 'absolute' || pos === 'fixed' || pos === 'relative') ? pos : 'relative'
+      });
+      this.$el.css({
+        'bottom': 0,
+        'height': '100%',
+        'left': 0,
+        'position': 'absolute',
+        'right': 0,
+        'top': 0,
+        'width': '100%'
+      });
 
       this.render();
     },
@@ -240,9 +257,9 @@
     render: function() {
       var tooltipOpts = UI.$.extend(true, {}, this.tour.tooltip, this.settings.tooltip, { src: this.settings.message });
 
-      this.tooltip = UI.tooltip(this.settings.boundTo, tooltipOpts);
+      this.tooltip = UI.tooltip(this.$el, tooltipOpts);
 
-      this.tooltip.element.off();
+      this.$el.off();
       this._addBeforeEvent();
     },
 
@@ -265,6 +282,7 @@
       this.state = 'hidden';
 
       this.tooltip.hide();
+      this.$el.remove();
       UI.$(document).trigger('shown:step-' + this.settings._id, this);
     },
 
@@ -284,9 +302,8 @@
           },
           $target = elements[target] || UI.$(target);
 
-      $target.on(event, function(event) {
-        UI.$(event.target).off(event.type);
-        this.listen(events)
+      $target.one(event, function(event) {
+        this.listen(events);
       }.bind(this));
     },
 
